@@ -1,0 +1,32 @@
+{
+  "name": "prisma-eslint-parser",
+  "author": "JRoy",
+  "homepage": "https://github.com/JRoy/prisma-eslint-parser",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "dts build"
+  },
+  "main": "dist/index.js",
+  "module": "dist/prisma-eslint-parser.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "@mrleebo/prisma-ast": "^0.12.1",
+    "chevrotain": "^10.5.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.15",
+    "@types/eslint": "^9.6.1",
+    "@types/estree": "^1.0.7",
+    "dts-cli": "^2.0.5",
+    "eslint-config-prettier": "^10.1.5",
+    "prettier": "^3.5.3",
+    "prettier-plugin-organize-imports": "^4.1.0"
+  },
+  "peerDependencies": {
+    "eslint": "^9.28.0"
+  }
+}
