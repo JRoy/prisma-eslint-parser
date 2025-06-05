@@ -13,6 +13,14 @@
     "dist",
     "src"
   ],
+  "keywords": [
+    "eslint",
+    "eslint-parser",
+    "prisma",
+    "prisma-ast",
+    "typescript",
+    "bun"
+  ],
   "dependencies": {
     "@mrleebo/prisma-ast": "^0.12.1",
     "chevrotain": "^10.5.0"
