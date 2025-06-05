@@ -15,7 +15,7 @@ import Program = AST.Program;
 
 export const meta = {
   name: 'prisma-eslint-parser',
-  version: '1.1.1',
+  version: '1.1.2',
 };
 
 /**
