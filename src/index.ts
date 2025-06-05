@@ -1,11 +1,14 @@
 import {
+  Comment,
   getSchema,
   PrismaParser,
   Schema,
   VisitorClassFactory,
 } from '@mrleebo/prisma-ast';
+import type { CstNodeLocation } from 'chevrotain';
 import { IRecognitionException, isRecognitionException } from 'chevrotain';
 import { AST, Linter } from 'eslint';
+import * as ESTree from 'estree';
 import ParserOptions = Linter.ParserOptions;
 import ESLintParseResult = Linter.ESLintParseResult;
 import Program = AST.Program;
@@ -29,6 +32,33 @@ function buildESTreeProgram(
   const lastLineIndex = lines.length - 1;
   const lastCol = lines[lastLineIndex]?.length || 0;
 
+  const comments = prismaAst.list
+    .filter(line => line.type === 'comment' && (line as any).location)
+    .map(comment => comment as Comment & { location: CstNodeLocation })
+    .filter(
+      line =>
+        line.location.startLine &&
+        line.location.endLine &&
+        line.location.startColumn &&
+        line.location.endColumn,
+    )
+    .map(comment => {
+      const location = comment.location;
+
+      return {
+        type: location.startColumn === location.endLine ? 'Line' : 'Block',
+        value: comment.text,
+        range: [
+          location.startOffset,
+          location.endOffset || location.startOffset,
+        ],
+        loc: {
+          start: { line: location.startLine!, column: location.startColumn! },
+          end: { line: location.endLine!, column: location.endColumn! },
+        },
+      } satisfies ESTree.Comment;
+    });
+
   return {
     type: 'Program',
     body: [],
@@ -39,7 +69,7 @@ function buildESTreeProgram(
       end: { line: lastLineIndex + 1, column: lastCol },
     },
     tokens: [],
-    comments: [],
+    comments,
 
     // Attach the raw Prisma AST so rules can inspect it directly:
     prismaAst,
