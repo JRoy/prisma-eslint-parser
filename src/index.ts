@@ -37,6 +37,7 @@ function buildESTreeProgram(
     .map(comment => comment as Comment & { location: CstNodeLocation })
     .filter(
       line =>
+        line.text.startsWith('///') &&
         line.location.startLine &&
         line.location.endLine &&
         line.location.startColumn &&
@@ -46,8 +47,8 @@ function buildESTreeProgram(
       const location = comment.location;
 
       return {
-        type: location.startColumn === location.endLine ? 'Line' : 'Block',
-        value: comment.text,
+        type: 'Line', // AST comments are always one line
+        value: comment.text.slice(3).trim(), // Remove leading '///'
         range: [
           location.startOffset,
           location.endOffset || location.startOffset,
