@@ -33,7 +33,14 @@ function buildESTreeProgram(
   const lastCol = lines[lastLineIndex]?.length || 0;
 
   const comments = prismaAst.list
-    .filter(line => line.type === 'comment' && (line as any).location)
+    .filter(line => line.type === 'comment' || (line as any).properties)
+    .map(line =>
+      line.type === 'comment' ?
+        line
+      : (line as any).properties.filter((prop: any) => prop.type === 'comment'),
+    )
+    .flat()
+    .filter(line => (line as any).location)
     .map(comment => comment as Comment & { location: CstNodeLocation })
     .filter(
       line =>
